@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#102b3f">
+<title>ProcessPilot | AI Chemical Process Calculator</title>
+<style>
+:root{--navy:#102b3f;--navy2:#173d54;--teal:#13b8a6;--cyan:#dff7f3;--bg:#f3f7fa;--ink:#172b3a;--muted:#6b7e8d;--line:#e2eaf0;--white:#fff;--orange:#f2a65a;--shadow:0 12px 35px rgba(20,48,68,.08)}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif}
+button,input,select{font:inherit}button{cursor:pointer}.app{min-height:100vh;display:grid;grid-template-columns:250px 1fr}
+.sidebar{background:linear-gradient(180deg,var(--navy),#0c2232);color:#eaf4f7;padding:26px 16px;display:flex;flex-direction:column;gap:28px}
+.brand{display:flex;align-items:center;gap:12px;padding:0 10px}.brandmark{width:39px;height:39px;border-radius:12px;background:linear-gradient(135deg,var(--teal),#5ed8cb);display:grid;place-items:center;color:#073b40;font-size:22px;font-weight:900}.brand strong{display:block;font-size:16px;letter-spacing:.2px}.brand small{color:#9fb6c2;font-size:11px}
+.navlabel{color:#7f9aa8;text-transform:uppercase;font-size:10px;letter-spacing:1.4px;padding:0 12px;margin-bottom:7px}.nav{display:grid;gap:5px}.nav button{border:0;background:transparent;color:#b7cbd4;text-align:left;padding:11px 12px;border-radius:10px;display:flex;align-items:center;gap:12px;font-size:13px}.nav button:hover,.nav button.active{background:#21465a;color:#fff}.nav button.active{box-shadow:inset 3px 0 var(--teal)}.nav .ico{width:19px;text-align:center;font-size:16px}.sidefoot{margin-top:auto;border-top:1px solid #2a4a5b;padding:18px 10px 0;color:#9db4c0;font-size:11px}
+main{min-width:0}.topbar{height:76px;background:#fff;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 34px;position:sticky;top:0;z-index:5}.crumb{font-size:13px;color:var(--muted)}.crumb b{color:var(--ink)}.topright{display:flex;align-items:center;gap:12px}.status{display:flex;align-items:center;gap:7px;font-size:12px;color:#56716f;background:#eaf8f4;padding:7px 11px;border-radius:30px}.dot{width:7px;height:7px;border-radius:50%;background:#13b88b}
+.avatar{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;background:#e5f4f2;color:#14796e;font-weight:700}
+.content{max-width:1440px;margin:auto;padding:32px 34px 54px}.page{display:none}.page.active{display:block}.eyebrow{font-size:11px;text-transform:uppercase;letter-spacing:1.5px;color:#0c9d90;font-weight:800}.heading{display:flex;justify-content:space-between;align-items:flex-end;gap:18px;margin-bottom:24px}.heading h1{font-size:28px;letter-spacing:-.8px;margin:5px 0 4px;color:#132f42}.heading p{margin:0;color:var(--muted);font-size:13px}.btn{border:0;border-radius:9px;padding:10px 15px;font-size:12px;font-weight:700;background:var(--navy);color:#fff}.btn:hover{background:#20516b}.btn.primary{background:var(--teal);color:#063c3b}.btn.light{background:#edf4f6;color:#315164}.btn.danger{background:#fff0ee;color:#bb4b3f}.grid{display:grid;gap:17px}.stats{grid-template-columns:repeat(4,minmax(0,1fr));margin-bottom:19px}.card{background:#fff;border:1px solid var(--line);border-radius:15px;padding:19px;box-shadow:var(--shadow)}.stat{display:flex;justify-content:space-between;gap:10px}.stat small{color:var(--muted);font-size:11px}.stat strong{display:block;font-size:25px;margin-top:5px;letter-spacing:-.6px}.staticon{width:36px;height:36px;border-radius:10px;background:#e7f7f4;display:grid;place-items:center;font-size:17px}.dashboardgrid{grid-template-columns:1.35fr 1fr}.cardtitle{font-size:14px;font-weight:800;margin:0 0 4px}.sub{color:var(--muted);font-size:11px;margin:0 0 17px}.quickgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.quick{border:1px solid var(--line);border-radius:11px;padding:14px;background:#fff;text-align:left;display:flex;gap:11px;align-items:center}.quick:hover{border-color:#7ed8ce;background:#f7fffd}.quick .qicon{width:35px;height:35px;border-radius:9px;background:#edf8f6;display:grid;place-items:center;font-size:17px}.quick b{display:block;font-size:12px}.quick small{font-size:10px;color:var(--muted)}.activity{display:grid;gap:0}.activityrow{display:flex;justify-content:space-between;gap:12px;padding:11px 0;border-top:1px solid #edf1f4;font-size:11px}.activityrow:first-child{border-top:0}.activityrow span{color:var(--muted)}.pill{font-size:10px;color:#087c70;background:#e9f8f4;padding:4px 8px;border-radius:20px;white-space:nowrap}
+.workspace{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(280px,.85fr);gap:18px;align-items:start}.formcard h2,.resultcard h2{font-size:15px;margin:0 0 5px}.formcard>p,.resultcard>p{font-size:11px;color:var(--muted);margin:0 0 19px}.fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.field{display:grid;gap:6px}.field.full{grid-column:1/-1}.field label{font-size:11px;color:#526979;font-weight:700}.field input,.field select{width:100%;border:1px solid #dce6eb;border-radius:8px;padding:10px 11px;background:#fff;color:var(--ink);outline:none;font-size:13px}.field input:focus,.field select:focus{border-color:var(--teal);box-shadow:0 0 0 3px #13b8a61a}.hint{font-size:10px;color:#8797a2}.actions{display:flex;gap:9px;margin-top:18px;flex-wrap:wrap}.resultbox{border-radius:12px;background:#f2faf8;border:1px solid #d8f0eb;padding:17px;margin:14px 0}.resultbox small{font-size:10px;color:#577b78}.resultbox strong{display:block;font-size:27px;color:#087f73;letter-spacing:-.7px;margin:3px 0}.resultbox span{font-size:11px;color:#54736f}.resultlist{display:grid;gap:0}.resultline{display:flex;justify-content:space-between;gap:10px;padding:10px 0;border-bottom:1px solid #edf1f3;font-size:11px}.resultline span{color:var(--muted)}.empty{color:#8b9ba5;text-align:center;padding:30px 10px;font-size:12px}.note{background:#fff8eb;border:1px solid #f4e4c6;color:#87612d;border-radius:10px;padding:11px 13px;font-size:10px;margin-top:14px}
+.tablewrap{overflow:auto}.table{width:100%;border-collapse:collapse;font-size:12px}.table th{text-align:left;color:#758895;font-size:10px;text-transform:uppercase;letter-spacing:.8px;padding:11px;border-bottom:1px solid var(--line)}.table td{padding:12px 11px;border-bottom:1px solid #edf1f4}.table tr:last-child td{border-bottom:0}.emptytable{text-align:center;padding:35px;color:var(--muted);font-size:12px}
+.converter-result{font-size:24px;font-weight:800;color:#087f73;margin:18px 0 5px;overflow-wrap:anywhere}.unitrow{display:grid;grid-template-columns:1fr 145px;gap:9px}.twocol{grid-template-columns:1fr 1fr}.bar{height:8px;background:#eaf0f3;border-radius:20px;overflow:hidden;margin:10px 0}.bar span{display:block;height:100%;background:var(--teal);border-radius:20px}
+.footer{text-align:center;color:#91a0a9;font-size:10px;margin-top:28px}
+@media(max-width:950px){.app{grid-template-columns:76px 1fr}.sidebar{padding:22px 10px}.brand{padding:0;justify-content:center}.brandtext,.navlabel,.nav button .navtext,.sidefoot{display:none}.nav button{justify-content:center;padding:12px 5px}.nav .ico{font-size:19px}.dashboardgrid{grid-template-columns:1fr}.stats{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:650px){.app{display:block}.sidebar{height:auto;padding:10px 12px;position:sticky;top:0;z-index:10;display:block}.brand{display:none}.nav{display:flex;overflow:auto;gap:4px}.nav button{flex:0 0 auto;padding:9px 11px}.nav button .navtext{display:inline;font-size:10px}.nav .ico{font-size:14px;width:auto}.topbar{height:55px;padding:0 16px}.content{padding:23px 15px 40px}.heading{align-items:flex-start;flex-direction:column}.heading h1{font-size:24px}.stats{gap:9px}.card{padding:15px}.stat strong{font-size:21px}.workspace{grid-template-columns:1fr}.fields{grid-template-columns:1fr 1fr}.quickgrid{grid-template-columns:1fr 1fr}.status{font-size:10px}.topright{gap:7px}}
+@media(max-width:390px){.fields{grid-template-columns:1fr}.stats{grid-template-columns:1fr 1fr}.quickgrid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="app">
+<aside class="sidebar">
+  <div class="brand"><div class="brandmark">P</div><div class="brandtext"><strong>ProcessPilot</strong><small>CHEMICAL ENGINEERING SUITE</small></div></div>
+  <div><div class="navlabel">Workspace</div><nav class="nav">
+    <button class="active" data-page="dashboard"><span class="ico">⌂</span><span class="navtext">Dashboard</span></button>
+    <button data-page="material"><span class="ico">⚖</span><span class="navtext">Material Balance</span></button>
+    <button data-page="heat"><span class="ico">♨</span><span class="navtext">Heat Duty</span></button>
+    <button data-page="fluid"><span class="ico">⇢</span><span class="navtext">Fluid Flow</span></button>
+    <button data-page="converter"><span class="ico">⇄</span><span class="navtext">Unit Converter</span></button>
+    <button data-page="history"><span class="ico">◷</span><span class="navtext">Calculation History</span></button>
+  </nav></div>
+  <div class="sidefoot">EDUCATIONAL TOOLKIT<br>Version 1.0 · Runs in your browser</div>
+</aside>
+<main>
+<header class="topbar"><div class="crumb">Workspace / <b id="crumb">Dashboard</b></div><div class="topright"><div class="status"><span class="dot"></span> All systems ready</div><div class="avatar">PP</div></div></header>
+<div class="content">
+<section class="page active" id="dashboard">
+  <div class="heading"><div><div class="eyebrow">OVERVIEW</div><h1>Good to see you, Engineer.</h1><p>Your workspace for quick, transparent chemical engineering calculations.</p></div><button class="btn" onclick="showPage('material')">＋ New calculation</button></div>
+  <div class="grid stats">
+    <div class="card stat"><div><small>Calculations saved</small><strong id="statCount">0</strong></div><div class="staticon">▤</div></div>
+    <div class="card stat"><div><small>Available calculators</small><strong>3</strong></div><div class="staticon">∑</div></div>
+    <div class="card stat"><div><small>Unit categories</small><strong>6</strong></div><div class="staticon">⇄</div></div>
+    <div class="card stat"><div><small>Platform status</small><strong style="font-size:18px;color:#0a9a80">Ready</strong></div><div class="staticon">✓</div></div>
+  </div>
+  <div class="grid dashboardgrid">
+    <div class="card"><h3 class="cardtitle">Quick calculations</h3><p class="sub">Choose a module to get started</p><div class="quickgrid">
+      <button class="quick" onclick="showPage('material')"><span class="qicon">⚖</span><span><b>Material balance</b><small>Input, output and accumulation</small></span></button>
+      <button class="quick" onclick="showPage('heat')"><span class="qicon">♨</span><span><b>Heat duty</b><small>Sensible heat calculation</small></span></button>
+      <button class="quick" onclick="showPage('fluid')"><span class="qicon">⇢</span><span><b>Fluid flow</b><small>Velocity from flow rate</small></span></button>
+      <button class="quick" onclick="showPage('converter')"><span class="qicon">⇄</span><span><b>Unit converter</b><small>Convert common units</small></span></button>
+    </div></div>
+    <div class="card"><h3 class="cardtitle">Recent activity</h3><p class="sub">Your latest saved calculations</p><div class="activity" id="recent"><div class="empty">No calculations yet. Run a calculation to see it here.</div></div></div>
+  </div>
+  <div class="card" style="margin-top:17px"><h3 class="cardtitle">About ProcessPilot</h3><p class="sub" style="margin-bottom:0">A student-focused chemical process calculation assistant. It combines clear input forms, standard engineering equations and a local calculation log. Use it to learn, check working and explore process fundamentals.</p></div>
+</section>
+
+<section class="page" id="material">
+  <div class="heading"><div><div class="eyebrow">CALCULATOR 01</div><h1>Material balance</h1><p>Calculate an unknown output using the overall mass balance.</p></div></div>
+  <div class="workspace">
+    <div class="card formcard"><h2>Process inputs</h2><p>For a steady-state, non-reactive system with no accumulation.</p>
+      <div class="fields">
+        <div class="field"><label>Inlet stream 1 (kg/h)</label><input id="mIn1" type="number" min="0" step="any" value="100"></div>
+        <div class="field"><label>Inlet stream 2 (kg/h)</label><input id="mIn2" type="number" min="0" step="any" value="50"></div>
+        <div class="field"><label>Known outlet (kg/h)</label><input id="mOut1" type="number" min="0" step="any" value="80"></div>
+        <div class="field"><label>Accumulation (kg/h)</label><input id="mAccum" type="number" step="any" value="0"></div>
+        <div class="field full"><label>Calculation note (optional)</label><input id="mNote" placeholder="e.g. Mixing tank mass balance"></div>
+      </div>
+      <div class="actions"><button class="btn primary" onclick="calcMaterial()">Calculate balance</button><button class="btn light" onclick="resetMaterial()">Reset</button></div>
+    </div>
+    <div class="card resultcard"><h2>Calculation result</h2><p>Unknown outlet flow rate</p><div id="materialResult" class="empty">Enter your process data and select Calculate.</div><div class="note">Equation: Inlet − Outlet = Accumulation. This simple module assumes the listed streams are the complete system boundary.</div></div>
+  </div>
+</section>
+
+<section class="page" id="heat">
+  <div class="heading"><div><div class="eyebrow">CALCULATOR 02</div><h1>Sensible heat duty</h1><p>Estimate heat required for a temperature change without phase change.</p></div></div>
+  <div class="workspace">
+    <div class="card formcard"><h2>Thermal inputs</h2><p>Use consistent SI units: kg/s, kJ/(kg·K) and °C or K difference.</p>
+      <div class="fields">
+        <div class="field"><label>Mass flow rate (kg/s)</label><input id="hMass" type="number" min="0" step="any" value="2"></div>
+        <div class="field"><label>Specific heat capacity (kJ/kg·K)</label><input id="hCp" type="number" min="0" step="any" value="4.18"></div>
+        <div class="field"><label>Inlet temperature (°C)</label><input id="hTin" type="number" step="any" value="25"></div>
+        <div class="field"><label>Outlet temperature (°C)</label><input id="hTout" type="number" step="any" value="80"></div>
+        <div class="field full"><label>Calculation note (optional)</label><input id="hNote" placeholder="e.g. Water heating"></div>
+      </div>
+      <div class="actions"><button class="btn primary" onclick="calcHeat()">Calculate heat duty</button><button class="btn light" onclick="resetHeat()">Reset</button></div>
+    </div>
+    <div class="card resultcard"><h2>Calculation result</h2><p>Sensible heat transfer rate</p><div id="heatResult" class="empty">Enter your thermal data and select Calculate.</div><div class="note">Equation: Q̇ = ṁ × Cp × (Tout − Tin). A positive value indicates heating; a negative value indicates cooling.</div></div>
+  </div>
+</section>
+
+<section class="page" id="fluid">
+  <div class="heading"><div><div class="eyebrow">CALCULATOR 03</div><h1>Fluid flow velocity</h1><p>Calculate average velocity in a circular pipe from volumetric flow rate.</p></div></div>
+  <div class="workspace">
+    <div class="card formcard"><h2>Flow inputs</h2><p>Enter volumetric flow rate and internal pipe diameter.</p>
+      <div class="fields">
+        <div class="field"><label>Volumetric flow rate (m³/h)</label><input id="fFlow" type="number" min="0" step="any" value="10"></div>
+        <div class="field"><label>Pipe internal diameter (mm)</label><input id="fDia" type="number" min="0" step="any" value="100"></div>
+        <div class="field full"><label>Calculation note (optional)</label><input id="fNote" placeholder="e.g. Cooling water line"></div>
+      </div>
+      <div class="actions"><button class="btn primary" onclick="calcFluid()">Calculate velocity</button><button class="btn light" onclick="resetFluid()">Reset</button></div>
+    </div>
+    <div class="card resultcard"><h2>Calculation result</h2><p>Average cross-sectional velocity</p><div id="fluidResult" class="empty">Enter your flow data and select Calculate.</div><div class="note">Equations: A = πD²/4 and v = Q̇/A. This result is an average velocity; it does not include friction or pressure-drop calculations.</div></div>
+  </div>
+</section>
+
+<section class="page" id="converter">
+  <div class="heading"><div><div class="eyebrow">ENGINEERING UTILITY</div><h1>Smart unit converter</h1><p>Convert common engineering quantities using standard conversion factors.</p></div></div>
+  <div class="workspace">
+    <div class="card formcard"><h2>Conversion setup</h2><p>Select a quantity and units to convert.</p>
+      <div class="fields">
+        <div class="field full"><label>Quantity</label><select id="convType" onchange="updateUnits()"><option value="pressure">Pressure</option><option value="length">Length</option><option value="volume">Volume</option><option value="energy">Energy</option><option value="massflow">Mass flow rate</option><option value="volflow">Volumetric flow rate</option><option value="temperature">Temperature</option></select></div>
+        <div class="field full"><label>Value</label><input id="convValue" type="number" step="any" value="1" oninput="convert()"></div>
+        <div class="field"><label>From</label><select id="convFrom" onchange="convert()"></select></div>
+        <div class="field"><label>To</label><select id="convTo" onchange="convert()"></select></div>
+      </div>
+    </div>
+    <div class="card resultcard"><h2>Converted value</h2><p>Conversion result</p><div id="convResult" class="converter-result">—</div><div id="convCaption" class="sub">Choose units to begin.</div><div class="note">Temperature conversions use dedicated formulas. Other categories use standard multiplicative factors.</div></div>
+  </div>
+</section>
+
+<section class="page" id="history">
+  <div class="heading"><div><div class="eyebrow">WORKSPACE RECORDS</div><h1>Calculation history</h1><p>Calculations are stored locally in this browser on this device.</p></div><div style="display:flex;gap:8px"><button class="btn light" onclick="exportHistory()">Export CSV</button><button class="btn danger" onclick="clearHistory()">Clear history</button></div></div>
+  <div class="card"><div class="tablewrap"><table class="table"><thead><tr><th>Date & time</th><th>Module</th><th>Calculation</th><th>Result</th><th></th></tr></thead><tbody id="historyBody"><tr><td colspan="5" class="emptytable">No saved calculations yet.</td></tr></tbody></table></div></div>
+</section>
+<div class="footer">ProcessPilot · Educational calculations only · Verify results independently before engineering use</div>
+</div>
+</main>
+</div>
+<script>
+const pages={dashboard:"Dashboard",material:"Material Balance",heat:"Heat Duty",fluid:"Fluid Flow",converter:"Unit Converter",history:"Calculation History"};
+function showPage(id){document.querySelectorAll(".page").forEach(p=>p.classList.toggle("active",p.id===id));document.querySelectorAll(".nav button").forEach(b=>b.classList.toggle("active",b.dataset.page===id));document.getElementById("crumb").textContent=pages[id];window.scrollTo({top:0,behavior:"smooth"});}
+document.querySelectorAll(".nav button").forEach(b=>b.addEventListener("click",()=>showPage(b.dataset.page)));
+const num=id=>{const v=Number(document.getElementById(id).value);if(!Number.isFinite(v))throw Error("Please enter valid numbers in all fields.");return v};
+const fmt=(n,d=4)=>Number(n).toLocaleString(undefined,{maximumFractionDigits:d});
+function save(module,name,result,unit){let arr=getHistory();arr.unshift({id:Date.now()+Math.random(),date:new Date().toLocaleString(),module,name,result:fmt(result,6),unit});arr=arr.slice(0,250);localStorage.setItem("processpilot_history",JSON.stringify(arr));renderHistory();}
+function getHistory(){try{return JSON.parse(localStorage.getItem("processpilot_history")||"[]")}catch(e){return []}}
+function showResult(id,html){document.getElementById(id).innerHTML=html}
+function calcMaterial(){try{let a=num("mIn1"),b=num("mIn2"),o=num("mOut1"),acc=num("mAccum");if([a,b,o].some(x=>x<0))throw Error("Inlet and known outlet flow rates cannot be negative.");let unknown=a+b-o-acc;if(unknown<0)throw Error("The inputs give a negative unknown outlet. Check the flow rates and accumulation.");let note=document.getElementById("mNote").value||"Overall mass balance";showResult("materialResult",`<div class="resultbox"><small>UNKNOWN OUTLET FLOW RATE</small><strong>${fmt(unknown)} kg/h</strong><span>${note.replace(/[<>&"]/g,"")}</span></div><div class="resultlist"><div class="resultline"><span>Total inlet</span><b>${fmt(a+b)} kg/h</b></div><div class="resultline"><span>Known outlet</span><b>${fmt(o)} kg/h</b></div><div class="resultline"><span>Accumulation</span><b>${fmt(acc)} kg/h</b></div><div class="resultline"><span>Balance check</span><b>In − Out = ${fmt(acc)} kg/h</b></div></div>`);save("Material balance",note,unknown,"kg/h");}catch(e){alert(e.message)}}
+function resetMaterial(){["mIn1","mIn2","mOut1","mAccum","mNote"].forEach((id,i)=>document.getElementById(id).value=[100,50,80,0,""][i]);showResult("materialResult",'<div class="empty">Enter your process data and select Calculate.</div>')}
+function calcHeat(){try{let m=num("hMass"),cp=num("hCp"),ti=num("hTin"),to=num("hTout");if(m<0||cp<0)throw Error("Mass flow and specific heat must be zero or greater.");let q=m*cp*(to-ti),note=document.getElementById("hNote").value||"Sensible heat duty";showResult("heatResult",`<div class="resultbox"><small>HEAT TRANSFER RATE</small><strong>${fmt(q)} kW</strong><span>${q>0?"Heating duty":q<0?"Cooling duty":"No temperature change"}</span></div><div class="resultlist"><div class="resultline"><span>Temperature change</span><b>${fmt(to-ti)} K</b></div><div class="resultline"><span>Mass flow rate</span><b>${fmt(m)} kg/s</b></div><div class="resultline"><span>Specific heat</span><b>${fmt(cp)} kJ/kg·K</b></div><div class="resultline"><span>Magnitude</span><b>${fmt(Math.abs(q))} kW</b></div></div>`);save("Heat duty",note,q,"kW");}catch(e){alert(e.message)}}
+function resetHeat(){["hMass","hCp","hTin","hTout","hNote"].forEach((id,i)=>document.getElementById(id).value=[2,4.18,25,80,""][i]);showResult("heatResult",'<div class="empty">Enter your thermal data and select Calculate.</div>')}
+function calcFluid(){try{let flow=num("fFlow"),dia=num("fDia");if(flow<0||dia<=0)throw Error("Flow rate must be zero or greater and diameter must be greater than zero.");let q=flow/3600,d=dia/1000,area=Math.PI*d*d/4,v=q/area,note=document.getElementById("fNote").value||"Pipe flow velocity";showResult("fluidResult",`<div class="resultbox"><small>AVERAGE FLUID VELOCITY</small><strong>${fmt(v)} m/s</strong><span>Based on circular pipe cross-section</span></div><div class="resultlist"><div class="resultline"><span>Flow rate</span><b>${fmt(flow)} m³/h</b></div><div class="resultline"><span>Pipe area</span><b>${fmt(area,6)} m²</b></div><div class="resultline"><span>Diameter</span><b>${fmt(dia)} mm</b></div></div>`);save("Fluid flow",note,v,"m/s");}catch(e){alert(e.message)}}
+function resetFluid(){["fFlow","fDia","fNote"].forEach((id,i)=>document.getElementById(id).value=[10,100,""][i]);showResult("fluidResult",'<div class="empty">Enter your flow data and select Calculate.</div>')}
+const units={
+pressure:{ "Pa":1,"kPa":1000,"bar":100000,"atm":101325,"psi":6894.757,"mmHg":133.322},
+length:{"m":1,"cm":.01,"mm":.001,"km":1000,"ft":.3048,"in":.0254},
+volume:{"m³":1,"L":.001,"mL":1e-6,"ft³":.0283168,"US gal":.00378541},
+energy:{"J":1,"kJ":1000,"MJ":1e6,"cal":4.184,"kcal":4184,"kWh":3600000},
+massflow:{"kg/s":1,"kg/h":1/3600,"g/s":.001,"tonne/h":1000/3600,"lb/h":.45359237/3600},
+volflow:{"m³/s":1,"m³/h":1/3600,"L/s":.001,"L/min":.001/60,"US gal/min":.00378541/60}
+};
+function updateUnits(){let type=document.getElementById("convType").value,from=document.getElementById("convFrom"),to=document.getElementById("convTo");let list=type==="temperature"?["°C","°F","K"]:Object.keys(units[type]);from.innerHTML=to.innerHTML=list.map(x=>`<option>${x}</option>`).join("");if(type==="pressure"){from.value="bar";to.value="kPa"}if(type==="length"){from.value="m";to.value="mm"}if(type==="volume"){from.value="L";to.value="m³"}if(type==="energy"){from.value="kJ";to.value="J"}if(type==="massflow"){from.value="kg/h";to.value="kg/s"}if(type==="volflow"){from.value="m³/h";to.value="L/s"}if(type==="temperature"){from.value="°C";to.value="K"}convert()}
+function convert(){let type=document.getElementById("convType").value,v=Number(document.getElementById("convValue").value),f=document.getElementById("convFrom").value,t=document.getElementById("convTo").value;if(!f||!t||!Number.isFinite(v)){document.getElementById("convResult").textContent="—";return}let out;if(type==="temperature"){let k=f==="°C"?v+273.15:f==="°F"?(v-32)*5/9+273.15:v;out=t==="K"?k:t==="°C"?k-273.15:(k-273.15)*9/5+32}else{let base=v*units[type][f];out=base/units[type][t]}document.getElementById("convResult").textContent=fmt(out,8)+" "+t;document.getElementById("convCaption").textContent=`${fmt(v,8)} ${f} = ${fmt(out,8)} ${t}`}
+function renderHistory(){let arr=getHistory(),body=document.getElementById("historyBody");document.getElementById("statCount").textContent=arr.length;if(!arr.length){body.innerHTML='<tr><td colspan="5" class="emptytable">No saved calculations yet.</td></tr>';document.getElementById("recent").innerHTML='<div class="empty">No calculations yet. Run a calculation to see it here.</div>';return}body.innerHTML=arr.map(x=>`<tr><td>${escapeHtml(x.date)}</td><td><span class="pill">${escapeHtml(x.module)}</span></td><td>${escapeHtml(x.name)}</td><td><b>${escapeHtml(x.result)} ${escapeHtml(x.unit)}</b></td><td><button class="btn light" style="padding:6px 9px" onclick="deleteEntry('${x.id}')">Delete</button></td></tr>`).join("");document.getElementById("recent").innerHTML=arr.slice(0,4).map(x=>`<div class="activityrow"><div><b>${escapeHtml(x.module)}</b><br><span>${escapeHtml(x.name)}</span></div><b>${escapeHtml(x.result)} ${escapeHtml(x.unit)}</b></div>`).join("")}
+function escapeHtml(s){return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+function deleteEntry(id){localStorage.setItem("processpilot_history",JSON.stringify(getHistory().filter(x=>String(x.id)!==String(id))));renderHistory()}
+function clearHistory(){if(confirm("Delete all saved calculations from this browser?")){localStorage.removeItem("processpilot_history");renderHistory()}}
+function exportHistory(){let arr=getHistory();if(!arr.length){alert("There is no history to export yet.");return}let rows=[["Date","Module","Calculation","Result","Unit"],...arr.map(x=>[x.date,x.module,x.name,x.result,x.unit])];let csv=rows.map(r=>r.map(v=>'"'+String(v).replace(/"/g,'""')+'"').join(",")).join("\n");let a=document.createElement("a");a.href=URL.createObjectURL(new Blob([csv],{type:"text/csv"}));a.download="processpilot-calculation-history.csv";a.click();URL.revokeObjectURL(a.href)}
+updateUnits();renderHistory();
+</script>
+</body>
+</html>
